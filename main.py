@@ -51,7 +51,22 @@ def next_point_iteration(x):
     numerator = u(x) * f(x - u(x))
     denominator = 2 * f(x - u(x)) - f(x)
 
-    return a - b + numerator / denominator
+    #print 'u(x) = %f' % (u(x))
+    #print 'f(x - u(x)) = %f' % (f(x - u(x)))
+    #print 'x = %f | dem=%f' % (x,denominator)
+
+    try:
+        return a - b + numerator / denominator
+    except ZeroDivisionError:
+        # Due to nature of formula (in the denominator), this would only occur
+        # when we're _very_ close to a true root if not
+        # there already.
+        return x
+
+
+
+
+
 
 
 
@@ -63,10 +78,52 @@ def do_main(x0):
     """
     print 'Using Initial X-value : %s' % str(x0)
     print 'Finding Roots using both Newton Iteration and 3-point Iteration'
-    x = 2
-    print "f(%d) = %f | f'(%d) = %f" % (x, f(x), x, df(x))
 
-    
+
+
+    LIMIT = 10 ** 9 # Maximum number of loop iterations
+    MIN_PROGRESS = 10 ** (-3) # Minimum amount of progress we should make at each step
+    count = 1
+
+
+    x = x0
+    prev_x = x0
+
+    newton_x = x0
+    point_iter_x = x0
+
+    while  True:
+            # Stop if we exceed our iteration limit
+            if count > LIMIT:
+                print 'Stopping Iteration. Loop Limit Reached: %d' % LIMIT
+                break
+
+            # Compute the Next Points
+            next_newton = next_x_netwon(newton_x)
+            try:
+                next_iter_point = next_point_iteration(point_iter_x)
+            except ZeroDivisionError:
+                # Due to nature of formula, this would only occur
+                # when we're _very_ close to a true root if not
+                # there already.
+                next_iter_point = point_iter_x
+
+            # Print the Current Results
+            print '%d) Newton=%.10f | 3-Point-Iteration=%.10f' % (count, newton_x, next_iter_point)
+
+            # Stop if we didn't make progress on either
+            step_newton = abs(next_newton - newton_x)
+            step_iter = abs(next_iter_point - point_iter_x)
+            max_step = max(step_newton, step_iter)
+            if max_step < MIN_PROGRESS:
+                print "Stopping Iteration. We're progressing slower than %f per loop" % MIN_PROGRESS
+                break
+
+            # Update the loop count and x-points
+            count += 1
+            newton_x = next_newton
+            point_iter_x = next_iter_point
+
 
 
 def usage():
