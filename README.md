@@ -17,11 +17,12 @@ where u(x_i) is defined as follows:
 
 How to Run
 ==========
+<pre>
 python main.py [x0]   
-     x0 : Initial x-point to use   
-         
+     x0 : Initial x-point to use           
+</pre>
 
-Example:    
+For Example:    
 
 `python main.py 0.98`   
 
