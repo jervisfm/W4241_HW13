@@ -46,7 +46,7 @@ def next_point_iteration(x):
         where u(x_i) is:
 	        u(x_i) = f(x_i) / f'(x_i)
     """
-    print 'u(x) = %f' % (u(x))
+
     a = x
     b = u(x)
     numerator = u(x) * f(x - u(x))
@@ -103,7 +103,7 @@ def do_main(x0):
                 next_newton = next_x_netwon(newton_x)
                 next_iter_point = next_point_iteration(point_iter_x)
             except OverflowError:
-                print 'Floating Overflow occurred. Stopping Iteration. Latest X-values printed are:'
+                print 'Floating Overflow occurred. Stopping Iteration. Latest X-values are:'
                 print '%d) Newton=%.15f | 3-Point-Iteration=%.15f' % (count, newton_x, point_iter_x)
                 break
 
@@ -165,5 +165,5 @@ def main():
 
 if __name__ == '__main__':
     x0 = 0.1
-    do_main(x0)
-    #main()
+    #do_main(x0)
+    main()
