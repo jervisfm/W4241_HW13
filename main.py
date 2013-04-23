@@ -78,9 +78,6 @@ def do_main(x0):
     """
     print 'Using Initial X-value : %s' % str(x0)
     print 'Finding Roots using both Newton Iteration and 3-point Iteration'
-    x = 0.98
-    print 'f(x) = %f' % (f(x))
-    print 'df(x) = %f' % (df(x))
 
 
     LIMIT = 10 ** 9 # Maximum number of loop iterations
