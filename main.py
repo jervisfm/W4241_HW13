@@ -163,12 +163,6 @@ def main():
 
 
 if __name__ == '__main__':
-    h = 10 ** (-1)
-    #k = 0.5 * 10 ** (-2)
-    k = h
-    run_time = 1
-    graph_rate = 10
-    u0 = u1 = 0
-    x0 = 0.98
-    do_main(x0)
-    #main()
+    #x0 = 0.98
+    #do_main(x0)
+    main()
