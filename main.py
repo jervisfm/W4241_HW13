@@ -1,30 +1,57 @@
 from math import ceil, pi, sin, exp, sqrt
 
-try:
-    import matplotlib.pyplot as plt
-    from matplotlib.pyplot import figure
-    import sys
-except ImportError:
-    print('Dependency MatplotLib Is Missing. Please Install it and try again Exiting ...')
-    exit(-1)
+import sys
+
 
 
 __author__ = 'Jervis Muindi'
 # Date: April 2013
 # Numerical Analysis and Algorithms
-# Homework 9
+# Homework 13
 
 def f(x):
     """
-        This is the function describing the initial state of system.
+        The function we're finding roots for.
         You can change it something else (i.e. redefine it) if you'd like to solve a different problem.
+        Remember to also update the df(x) derivative function as well.
     """
-    return sin(pi * x)
+    return float((x ** 20) - 1)
+
+def df(x):
+    """
+        This is the derivative of the function we're finding roots for
+    """
+    return float(20 * (x ** 19))
 
 
+def next_x_netwon(x):
+    """
+        Finds the next number using netwon iteration formula
+    """
+    return x - (f(x) / df(x))
 
+def u(x):
+    """
+        Ratio of f(x) and f'(x) - i.e. f(x) / f'(x)
+    """
+    return f(x) / df(x)
 
+def next_point_iteration(x):
+    """
+        Finds the next number usign 3-point iteration Formula.
 
+        3-point iteration is defined as follows:
+	    x_(i+1) = x_i -u(x_i) + (u(x_i) * f(x_i - u(x_i))) / ( 2*f(x_i - u(x_i))  - f(x_i) )
+
+        where u(x_i) is:
+	        u(x_i) = f(x_i) / f'(x_i)
+    """
+    a = x
+    b = u(x)
+    numerator = u(x) * f(x - u(x))
+    denominator = 2 * f(x - u(x)) - f(x)
+
+    return a - b + numerator / denominator
 
 
 
@@ -35,42 +62,20 @@ def do_main(x0):
         x0 - initial x-point.
     """
     print 'Using Initial X-value : %s' % str(x0)
-    print 'Simulating and Solving PDE System for duration of %s' % run_time
-    print 'k (time-width) = %f' % k
-    print 'h (x-width) = %f' % h
-    print 'Run Time = %f ' % run_time
-    print 'Graph rate = %f' % graph_rate
-    pts_array = simulate(h,k,run_time, u0, u1)
-    print "We did this many steps : %d " % len(pts_array)
-    print "Plotting Results ..."
-    do_all_plots(pts_array, h, graph_rate)
+    print 'Finding Roots using both Newton Iteration and 3-point Iteration'
+    x = 2
+    print "f(%d) = %f | f'(%d) = %f" % (x, f(x), x, df(x))
 
-    times = [0.2, 0.4, 0.6, 0.8, 1.0]
-    print "----------------------------"
-    print "Plotting Required graphs..."
-    do_required_plots(pts_array, times, run_time, h, k)
-    print "All plots done"
-
-    print 'Errors in Computed Approx Solution: '
-    errors = compute_errors(pts_array, times, run_time, h, k)
-    i = 0
-    for err in errors:
-        print "At t = %f, L2-norm of error vector is  %f " % (times[i], err)
-        i += 1
+    
 
 
 def usage():
     print '**************'
-    print 'Partial ODE solver and grapher for the model problem of a vibrating string: '
+    print 'General Root Solver : '
     print 'Usage: '
-    print 'python main.py [x-width] [t-width] [total_time] [graph_rate] '
-    print '     x-width : amount of x-spacing between points'
-    print '     t-width: delta in time to be applied in a single step forward'
-    print '     total_time: amount of time be used in simulating the system'
-    print '     graph_rate: A graph should be drawn/plotted every "graph_rate" steps'
-    print '\nExample: python main.py 0.01 0.01 2 10\n'
-    print 'Note: 1) All input values should be positive numeric values. '
-    print '      2) Graphing ability is dependent on MatplotLib being installed'
+    print 'python main.py [x0]'
+    print '     x0 : initial x-point to use.'
+    print '\nExample: python main.py 0.98 \n'
 
 def is_number(s):
     try:
@@ -79,37 +84,26 @@ def is_number(s):
     except ValueError:
         return False
 
-def valid_inputs(h,k,total_time, graph_rate):
-    if (not is_number(h) or h < 0):
-        'h value must be a positive number : %s' % str(h)
+def valid_inputs(x0):
+    if not is_number(x0):
+        'x-value must be a number : %s' % str(x0)
         return False
-    if (not is_number(k) or k < 0):
-        'k value must be a positive number: %s' % str(k)
-        return False
-    if (not is_number(total_time) or total_time < 0):
-        'Time T must be a positive number: %s' % str(total_time)
-        return False
-    if (not is_number(graph_rate) or graph_rate < 0) :
-        'Graph Rate p must be a positive number: %s' % graph_rate
-        return False
-    return True
+    else:
+        return True
 
 def main():
     arg_count = len(sys.argv) - 1
-    if arg_count != 4:
+    if arg_count != 1:
         usage()
     else:
-        h = sys.argv[1]
-        k = sys.argv[2]
-        total_time = sys.argv[3]
-        graph_rate = sys.argv[4]
-        if not valid_inputs(h,k,total_time,graph_rate):
-            print 'Invalid Inputs detected'
+        x0 = sys.argv[1]
+        if not valid_inputs(x0):
+            print 'Invalid Input detected'
             print '************************'
             usage()
             exit(-1)
         else:
-            do_main(float(h),float(k),float(total_time),float(graph_rate))
+            do_main(x0)
 
 
 if __name__ == '__main__':
